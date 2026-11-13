@@ -4,6 +4,15 @@
 const $ = id => document.getElementById(id);
 const outlet = 593451;
 const state = {mode:'both', selected:null, upstream:new Set(), downstream:new Set(), data:null, map:null};
+// The map starts on a soft background; visitors can restore full street detail.
+function setBasemap(mode){
+ const streets=mode==='streets';
+ map.getPane('tilePane').classList.toggle('basemap-streets',streets);
+ for(const [id,active] of [['basemap-muted',!streets],['basemap-streets',streets]]){
+  const button=$(id);button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));
+ }
+}
+
 const fmt = n => Number(n).toLocaleString('en-NZ');
 const lengthFmt = n => `${Number(n).toLocaleString('en-NZ',{minimumFractionDigits:2,maximumFractionDigits:2})} km`;
 const showError = msg => {const el=$('error-notice'); el.hidden=false;el.textContent=msg;};
@@ -23,6 +32,8 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')$('method-overlay').
 if(!window.L){showError('Map library could not load. Connect to the internet and reload this page.');return;}
 const map=L.map('map',{zoomControl:false,preferCanvas:true,attributionControl:true,zoomSnap:0.25,minZoom:7});
 state.map=map;
+$('basemap-muted').addEventListener('click',()=>setBasemap('soft'));
+$('basemap-streets').addEventListener('click',()=>setBasemap('streets'));
 L.control.zoom({position:'topright'}).addTo(map);
 // Community-run OpenStreetMap standard tiles: no API key required.
 // See https://operations.osmfoundation.org/policies/tiles/ for usage conditions.
@@ -49,7 +60,7 @@ let allLen=0;
 function upstreamTrace(id){const found=new Set(),stack=[id];while(stack.length){const cur=stack.pop();for(const parent of up.get(cur)||[]){if(parent!==id&&!found.has(parent)){found.add(parent);stack.push(parent)}}}return found;}
 function downstreamTrace(id){const found=new Set(), seen=new Set([id]);let cur=id;while(true){const nxt=down.get(cur);if(nxt===undefined||nxt===-1)break;if(!featuresById.has(nxt)||seen.has(nxt)){console.warn('Invalid/cyclic downstream path at',cur,nxt);break;}seen.add(nxt);found.add(nxt);cur=nxt;}return found;}
 function total(ids){let sum=0;for(const id of ids)sum+=Number(featuresById.get(id)?.properties.length_km||0);return sum;}
-function styleFor(id){if(id===state.selected)return{color:'#273c53',weight:5.5,opacity:1};if(state.selected!==null){if(state.mode!=='downstream'&&state.upstream.has(id))return{color:'#168c81',weight:3.7,opacity:0.95};if(state.mode!=='upstream'&&state.downstream.has(id))return{color:'#df884b',weight:4.4,opacity:0.96};return{color:'#adbdc0',weight:1.3,opacity:0.26};}return{color:'#4f9b9d',weight:2.1,opacity:0.78};}
+function styleFor(id){if(id===state.selected)return{color:'#273c53',weight:5.5,opacity:1};if(state.selected!==null){if(state.mode!=='downstream'&&state.upstream.has(id))return{color:'#168c81',weight:3.7,opacity:0.95};if(state.mode!=='upstream'&&state.downstream.has(id))return{color:'#df884b',weight:4.4,opacity:0.96};return{color:'#708e99',weight:1.8,opacity:0.75};}return{color:'#387f88',weight:2.5,opacity:0.94};}
 function redraw(){
  for(const [id,layer] of displayed)layer.setStyle(styleFor(id));
  selectionHalo.clearLayers();

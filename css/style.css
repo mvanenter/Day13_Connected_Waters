@@ -14,3 +14,15 @@
  .map-legend{bottom:112px;left:12px;}
 }
 @media(max-width:390px){.map-heading strong{font-size:18px}.map-instruction{max-width:220px;}}
+
+/* Stream-first soft basemap, with an optional full-detail OSM view. */
+#map{background:#f2f5f0}
+.leaflet-tile-pane{filter:grayscale(.80) saturate(.40) contrast(.78) brightness(1.12);opacity:.40;transition:filter .2s ease,opacity .2s ease}
+.leaflet-tile-pane.basemap-streets{filter:none;opacity:1}
+.basemap-control{position:absolute;z-index:480;right:12px;top:95px;display:flex;align-items:center;gap:4px;padding:5px 6px;background:rgba(255,255,255,.96);border:1px solid #d2dfda;border-radius:10px;box-shadow:0 3px 12px #273b3c21;font-size:11px;color:#536d65}
+.basemap-control span{font-size:10px;padding:0 6px}
+.basemap-control button{border:0;border-radius:7px;background:transparent;color:#536d65;padding:7px 10px;font-size:11px;font-weight:700}
+.basemap-control button.active{background:#d9ece7;color:#155e5c}
+.basemap-control button:focus-visible{outline:2px solid #168c81;outline-offset:1px}
+.line.other{border-color:#708e99;border-top-width:3px}
+@media(max-width:700px){.basemap-control{top:80px;right:10px}.basemap-control span{display:none}.basemap-control button{padding:8px 10px}}
