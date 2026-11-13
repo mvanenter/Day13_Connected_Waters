@@ -1,0 +1,23 @@
+{
+  "source": "REC2 River Lines service extract, user-exported 13 November 2026",
+  "outlet_hydroid": 593451,
+  "reaches": 2706,
+  "connections_checked": 2705,
+  "broken_downstream_references": 0,
+  "cycles_detected": 0,
+  "reaches_reaching_outlet": 2706,
+  "endpoint_gaps_over_1m": 0,
+  "missing_geometry": 0,
+  "geodesic_network_length_km": 2086.75,
+  "prior_arcgis_geodesic_result_km": 2086.75,
+  "licence_note": "Source REC2 metadata indicates CC BY-NC 4.0. Verify terms before public redistribution.",
+  "stream_orders": {
+    "1": 1356,
+    "2": 636,
+    "3": 318,
+    "4": 200,
+    "5": 111,
+    "6": 66,
+    "7": 19
+  }
+}
