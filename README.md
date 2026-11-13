@@ -10,10 +10,11 @@ The project combines **ArcGIS Pro, Python/ArcPy, network tracing and geospatial 
 ## Explore the map
 
 - **Select a reach** to highlight upstream tributaries in teal, the downstream route in orange and the selected segment in navy with a white casing.
-- **Switch trace mode** between Both, Upstream and Downstream.
+- **Switch trace mode** between Both, Upstream and Downstream. Choosing a mode before selecting a river opens validated example reach **370742** to make the result visible immediately.
 - **Inspect metrics** for reach counts, mapped lengths, stream order, selected segment length and reported cumulative catchment area.
 - **Explore the outlet** to show the connected network feeding into the Ashley/Rakahuri river mouth.
 - **Switch basemaps** between **Soft** (subdued OpenStreetMap tiles, default for stream legibility) and **Streets** (full OpenStreetMap detail).
+- **Toggle the Environment Canterbury Ashley River major catchment boundary**.
 - Use the responsive river explorer on desktop or mobile; open **Method & QA** for the analysis checks.
 
 ## Source data
@@ -29,6 +30,15 @@ The river network came from the **REC2 (River Environment Classification 2) Rive
 **Attribution and permissions:** River data: REC2 / NIWA (now Earth Sciences New Zealand). Release metadata indicates **CC BY-NC 4.0** for a REC2 version, but the terms applicable to the *exact hosted service and derived extract* should be checked with the data provider. The GeoJSON is published here for a non-commercial portfolio demonstration; its availability does not imply unrestricted redistribution or commercial reuse. Do not treat the river data as LINZ-owned without evidence from the source metadata.
 
 **Background tiles:** © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright), subject to the OpenStreetMap tile usage policy. The Soft style applies CSS filters to the same tiles rather than changing the underlying geography.
+
+
+### Environment Canterbury catchment boundary
+
+The viewer adds an optional **Ashley River major catchment boundary** from the public Environment Canterbury Hydrology MapServer's [Major Catchment Boundaries layer](https://gis.ecan.govt.nz/arcgis/rest/services/Public/Hydrology/MapServer/0). The request filters to **CatchmentGroup = 662** and checks that the returned group name contains *Ashley*. The boundary is shown as a muted dashed outline, is not interactive, and can be toggled in the river explorer.
+
+The boundary is loaded live from Environment Canterbury: it is **not bundled** with the GeoJSON extract, and requires the ECan server to be accessible from the visitor's browser. If it is unavailable, the map displays a nonfatal status message and upstream/downstream tracing continues.
+
+**Important:** The ECan major catchment boundary is a separately maintained administrative/hydrological map layer. It is not a polygon generated from the REC2 network, and a small mismatch in data coverage or coastline is possible. Attribution: **Environment Canterbury**, major catchment boundaries.
 
 ## Methodology: how the network was built
 

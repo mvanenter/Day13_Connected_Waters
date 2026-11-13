@@ -26,3 +26,10 @@
 .basemap-control button:focus-visible{outline:2px solid #168c81;outline-offset:1px}
 .line.other{border-color:#708e99;border-top-width:3px}
 @media(max-width:700px){.basemap-control{top:80px;right:10px}.basemap-control span{display:none}.basemap-control button{padding:8px 10px}}
+
+/* Catchment line and clearer trace controls */
+.trace-help{font-size:11px;line-height:1.5;color:#536e68;margin:9px 0 3px}
+.boundary-toggle{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:700;color:#365b59;cursor:pointer}
+.boundary-toggle input{accent-color:#178c85;width:16px;height:16px;flex-shrink:0}
+.segment-switch button.active{background:#d7eee7;color:#105d57;box-shadow:inset 0 0 0 1px #8ebdb4}
+.boundary-status-error{color:#9a5035!important}
