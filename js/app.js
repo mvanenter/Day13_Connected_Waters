@@ -12,6 +12,8 @@ const state = {mode:'both', selected:null, upstream:new Set(), downstream:new Se
 function setBasemap(mode){
  const streets=mode==='streets';
  map.getPane('tilePane').classList.toggle('basemap-streets',streets);
+ // Keep surrounding roads and towns visible through the catchment focus.
+ if(boundaryMask)boundaryMask.setStyle({fillOpacity:streets ? 0.22 : 0.34});
  for(const [id,active] of [['basemap-muted',!streets],['basemap-streets',streets]]){
   const button=$(id);button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));
  }
@@ -85,7 +87,7 @@ function inverseCatchmentMask(features){
  if(rings.length<2)throw new Error('Catchment did not contain a valid polygon ring');
  return L.polygon(rings,{
   pane:'catchment-mask',interactive:false,stroke:false,
-  fill:true,fillColor:'#e8edeb',fillOpacity:.84,fillRule:'evenodd',
+  fill:true,fillColor:'#edf1ed',fillOpacity:.34,fillRule:'evenodd',
   smoothFactor:0
  });
 }

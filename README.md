@@ -168,3 +168,7 @@ https://mvanenter.github.io/Day13_Connected_Waters/
 ## Catchment-focus cartography
 
 The Leaflet viewer creates a **reverse polygon mask** from the Environment Canterbury Ashley River major catchment geometry. An outer polygon covers the surrounding map, with the catchment cut out as a hole using the even-odd fill rule. That mutes the surrounding basemap while leaving the terrain and waterways inside visible. A white-cased dark boundary is drawn above the mask. This is analogous in appearance to an ArcGIS Pro *Extract by Mask* composition, **but does not clip or delete the REC2 river data**. The surrounding subdued landscape and the official boundary are contextual map styling only. The source background is OpenStreetMap, not the shaded terrain/land-cover raster in the user-supplied catchment report.
+
+### Basemap and catchment focus
+
+The **Soft** basemap retains most of the OpenStreetMap road and place detail with reduced contrast, while **Streets** displays the full tile detail. The catchment focus uses a translucent reverse mask **outside** the ECan polygon (34% tint in Soft mode; 22% in Streets mode), so nearby places remain visible for orientation. This is a visual emphasis only: the REC2 features and tracing graph are not clipped or altered. Uncheck the catchment focus control to remove the mask and boundary.

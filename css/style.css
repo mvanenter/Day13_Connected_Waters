@@ -17,7 +17,7 @@
 
 /* Stream-first soft basemap, with an optional full-detail OSM view. */
 #map{background:#f2f5f0}
-.leaflet-tile-pane{filter:grayscale(.80) saturate(.40) contrast(.78) brightness(1.12);opacity:.40;transition:filter .2s ease,opacity .2s ease}
+.leaflet-tile-pane{filter:grayscale(.45) saturate(.70) contrast(.92) brightness(1.04);opacity:.80;transition:filter .2s ease,opacity .2s ease}
 .leaflet-tile-pane.basemap-streets{filter:none;opacity:1}
 .basemap-control{position:absolute;z-index:480;right:12px;top:95px;display:flex;align-items:center;gap:4px;padding:5px 6px;background:rgba(255,255,255,.96);border:1px solid #d2dfda;border-radius:10px;box-shadow:0 3px 12px #273b3c21;font-size:11px;color:#536d65}
 .basemap-control span{font-size:10px;padding:0 6px}
