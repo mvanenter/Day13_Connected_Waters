@@ -14,7 +14,7 @@ The project combines **ArcGIS Pro, Python/ArcPy, network tracing and geospatial 
 - **Inspect metrics** for reach counts, mapped lengths, stream order, selected segment length and reported cumulative catchment area.
 - **Explore the outlet** to show the connected network feeding into the Ashley/Rakahuri river mouth.
 - **Switch basemaps** between **Soft** (subdued OpenStreetMap tiles, default for stream legibility) and **Streets** (full OpenStreetMap detail).
-- **Toggle the Environment Canterbury Ashley River major catchment boundary**.
+- **Toggle a catchment-focused reverse mask and Environment Canterbury Ashley River catchment outline**.
 - Use the responsive river explorer on desktop or mobile; open **Method & QA** for the analysis checks.
 
 ## Source data
@@ -34,7 +34,7 @@ The river network came from the **REC2 (River Environment Classification 2) Rive
 
 ### Environment Canterbury catchment boundary
 
-The viewer adds an optional **Ashley River major catchment boundary** from the public Environment Canterbury Hydrology MapServer's [Major Catchment Boundaries layer](https://gis.ecan.govt.nz/arcgis/rest/services/Public/Hydrology/MapServer/0). The request filters to **CatchmentGroup = 662** and checks that the returned group name contains *Ashley*. The boundary is shown as a muted dashed outline, is not interactive, and can be toggled in the river explorer.
+The viewer adds an optional **Ashley River major catchment boundary** from the public Environment Canterbury Hydrology MapServer's [Major Catchment Boundaries layer](https://gis.ecan.govt.nz/arcgis/rest/services/Public/Hydrology/MapServer/0). The request filters to **CatchmentGroup = 662** and checks that the returned group name contains *Ashley*. The boundary is shown as a bold dark outline with a white casing, and a reverse mask mutes the basemap *outside* the catchment while preserving full river data and click interactions. The focus effect can be toggled in the river explorer. This is cartographic masking, not an analytical Extract by Mask or a modification of the river geometry.
 
 The boundary is loaded live from Environment Canterbury: it is **not bundled** with the GeoJSON extract, and requires the ECan server to be accessible from the visitor's browser. If it is unavailable, the map displays a nonfatal status message and upstream/downstream tracing continues.
 
@@ -164,3 +164,7 @@ https://mvanenter.github.io/Day13_Connected_Waters/
 **ArcGIS Pro · ArcPy/Python · directed graph traversal · hydrological connectivity · QA/QC · spatial data processing · GeoJSON · Leaflet · responsive JavaScript/CSS · GitHub Pages · cartographic communication**
 
 *Analysis and cartography: Melanie van Enter · 2026*
+
+## Catchment-focus cartography
+
+The Leaflet viewer creates a **reverse polygon mask** from the Environment Canterbury Ashley River major catchment geometry. An outer polygon covers the surrounding map, with the catchment cut out as a hole using the even-odd fill rule. That mutes the surrounding basemap while leaving the terrain and waterways inside visible. A white-cased dark boundary is drawn above the mask. This is analogous in appearance to an ArcGIS Pro *Extract by Mask* composition, **but does not clip or delete the REC2 river data**. The surrounding subdued landscape and the official boundary are contextual map styling only. The source background is OpenStreetMap, not the shaded terrain/land-cover raster in the user-supplied catchment report.

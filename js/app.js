@@ -50,6 +50,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 const haloPane=map.createPane('selected-halo');
 haloPane.style.zIndex=460;
 haloPane.style.pointerEvents='none';
+const maskPane=map.createPane('catchment-mask');maskPane.style.zIndex=420;maskPane.style.pointerEvents='none';
 const boundaryPane=map.createPane('catchment-boundary');boundaryPane.style.zIndex=430;boundaryPane.style.pointerEvents='none';
 const networkPane=map.createPane('network');networkPane.style.zIndex=440;
 const markerPane=map.createPane('selected-marker');markerPane.style.zIndex=465;markerPane.style.pointerEvents='none';
@@ -62,12 +63,42 @@ const selectionDot=L.circleMarker([0,0],{pane:'selected-marker',radius:6,color:'
 const renderer=L.canvas({padding:0.5,pane:'network'});
 let featuresById=new Map(), down=new Map(), up=new Map(), displayed=new Map(), geoLayer, extent;
 let boundaryLayer=null;
+let boundaryMask=null;
 let boundaryVisible=true;
+// Reverse-mask an area around New Zealand, cutting out the official ECan catchment
+// polygon. Only the display is masked; the REC2 reaches remain unmodified.
+function inverseCatchmentMask(features){
+ const outside=[[-52,152],[-52,180],[-32,180],[-32,152]];
+ const rings=[outside];
+ for(const feature of features){
+  const geom=feature.geometry;
+  if(!geom)continue;
+  const polys=geom.type==='Polygon'?[geom.coordinates]:geom.type==='MultiPolygon'?geom.coordinates:[];
+  for(const poly of polys){
+   // First ring is each disjoint polygon's exterior. Interior islands are rare
+   // here, but remain part of the surrounding muted landscape.
+   const outer=poly?.[0];
+   if(Array.isArray(outer)&&outer.length>=4)
+    rings.push(outer.map(([lon,lat])=>[lat,lon]));
+  }
+ }
+ if(rings.length<2)throw new Error('Catchment did not contain a valid polygon ring');
+ return L.polygon(rings,{
+  pane:'catchment-mask',interactive:false,stroke:false,
+  fill:true,fillColor:'#e8edeb',fillOpacity:.84,fillRule:'evenodd',
+  smoothFactor:0
+ });
+}
+function toggleCatchmentDisplay(){
+ for(const layer of [boundaryMask,boundaryLayer]){
+  if(!layer)continue;
+  if(boundaryVisible&&!map.hasLayer(layer))layer.addTo(map);
+  if(!boundaryVisible&&map.hasLayer(layer))map.removeLayer(layer);
+ }
+}
 $('boundary-toggle').addEventListener('change',e=>{
  boundaryVisible=e.target.checked;
- if(!boundaryLayer)return;
- if(boundaryVisible&&!map.hasLayer(boundaryLayer))boundaryLayer.addTo(map);
- else if(!boundaryVisible&&map.hasLayer(boundaryLayer))map.removeLayer(boundaryLayer);
+ toggleCatchmentDisplay();
 });
 async function loadCatchmentBoundary(){
  const status=$('boundary-status');
@@ -83,12 +114,15 @@ async function loadCatchmentBoundary(){
   if(!Array.isArray(data.features)||data.features.length===0)throw new Error('No Ashley River catchment features returned');
   const matches=data.features.filter(f=>String(f.properties?.CatchmentGroup)==='662' && /ashley/i.test(String(f.properties?.CatchmentGroupName||'')));
   if(!matches.length)throw new Error('Boundary response did not match Ashley River group 662');
-  boundaryLayer=L.geoJSON({type:'FeatureCollection',features:matches},{
-   pane:'catchment-boundary',interactive:false,
-   style:{color:'#4b7771',weight:2,opacity:.84,dashArray:'8 6',fillOpacity:0,lineJoin:'round'}
-  });
-  if(boundaryVisible)boundaryLayer.addTo(map);
-  status.textContent='Ashley River major catchment · Environment Canterbury';
+  boundaryMask=inverseCatchmentMask(matches);
+  // A crisp dark contour with a white under-stroke stays clear on any basemap.
+  const collection={type:'FeatureCollection',features:matches};
+  boundaryLayer=L.layerGroup([
+   L.geoJSON(collection,{pane:'catchment-boundary',interactive:false,style:{color:'#fff',weight:6,opacity:.95,fill:false,lineJoin:'round'}}),
+   L.geoJSON(collection,{pane:'catchment-boundary',interactive:false,style:{color:'#263d3b',weight:3.2,opacity:.98,fill:false,lineJoin:'round'}})
+  ]);
+  toggleCatchmentDisplay();
+  status.textContent='Catchment focus mask · Environment Canterbury (Ashley River group 662)';
  } catch(error){
   console.warn('Catchment boundary could not be loaded:',error);
   status.textContent='Boundary unavailable from ECan service; rivers still work.';
